@@ -5,6 +5,9 @@
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.Year;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.crimes.model.Model;
@@ -25,13 +28,13 @@ public class FXMLController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
-    private ComboBox<?> boxMese; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGiorno"
-    private ComboBox<?> boxGiorno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxGiorno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnCreaReteCittadina"
     private Button btnCreaReteCittadina; // Value injected by FXMLLoader
@@ -47,7 +50,22 @@ public class FXMLController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
-
+    	this.txtResult.clear();
+    	int anno = 0;
+    	try {
+    	anno = this.boxAnno.getValue();
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    		txtResult.setText("Selezionare un anno valido");
+    		return;
+    	}
+    	if(anno == 0) {
+    		txtResult.setText("Selezionare un anno valido");
+    		return;
+    	}
+    	
+    	String str = this.model.creaGrafo(anno);
+    	txtResult.setText(str);
     }
 
     @FXML
@@ -69,5 +87,8 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	this.boxAnno.getItems().addAll(this.model.getAllYears());
+    	this.boxMese.getItems().addAll(this.model.getAllMonths());
+    	this.boxGiorno.getItems().addAll(this.model.getAllDays());
     }
 }
