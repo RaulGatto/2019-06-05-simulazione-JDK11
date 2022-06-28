@@ -9,8 +9,11 @@ import java.time.Month;
 import java.time.MonthDay;
 import java.time.Year;
 import java.util.ResourceBundle;
+import java.util.Set;
 
+import it.polito.tdp.crimes.model.Distretto;
 import it.polito.tdp.crimes.model.Model;
+import it.polito.tdp.crimes.model.Vicino;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -65,7 +68,18 @@ public class FXMLController {
     	}
     	
     	String str = this.model.creaGrafo(anno);
-    	txtResult.setText(str);
+    	txtResult.setText(str + "\n");
+    	
+    	Set<Distretto> distretti = this.model.getDistrettiAdiacenti();
+    	
+    	for(Distretto d : distretti) {
+    		txtResult.appendText(String.format("I vicini di %d sono: \n", d.getId()));
+    		for(Vicino v : d.getVicini()) {
+    			txtResult.appendText(v.toString());
+    		}
+    		txtResult.appendText("\n\n");
+    	}
+    	
     }
 
     @FXML

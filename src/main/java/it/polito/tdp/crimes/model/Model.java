@@ -1,8 +1,12 @@
 package it.polito.tdp.crimes.model;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -43,7 +47,34 @@ public class Model {
 		
 		return String.format("E stato creato un grafo con %d vertici e %d archi", this.graph.vertexSet().size(), this.graph.edgeSet().size());
 	}
+	
+	public Set<Distretto> getDistrettiAdiacenti() {
 
+		List<Vicino> vicini;
+		for (Distretto d : this.graph.vertexSet()) {
+			vicini = new LinkedList<>();
+			for (Distretto d2 : Graphs.neighborListOf(this.graph, d)) {
+				double distance = LatLngTool.distance(d.getPosizione(), d2.getPosizione(), LengthUnit.KILOMETER);
+				Vicino vicino = new Vicino(d2, distance);
+				vicini.add(vicino);
+			}
+
+			Collections.sort(vicini, new Comparator<Vicino>() {
+
+				@Override
+				public int compare(Vicino o1, Vicino o2) {
+					// TODO Auto-generated method stub
+					return Double.compare(o1.getDistanza(), o2.getDistanza());
+				}
+
+			});
+			
+			d.setVicini(vicini);
+		}
+
+		return this.graph.vertexSet();
+	}
+	
 	public List<Integer> getAllYears() {
 		// TODO Auto-generated method stub
 		return this.dao.getAllYears();
